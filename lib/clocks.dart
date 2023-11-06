@@ -14,6 +14,8 @@ class ClockWidget extends StatelessWidget {
     this.showHoursLabel = false,
     this.needleWidth = 8,
     this.pointyNeedle = true,
+    this.backgroundColor = Colors.transparent,
+    this.color = Colors.black,
   });
 
   ///Clock widget size.
@@ -34,6 +36,14 @@ class ClockWidget extends StatelessWidget {
   ///Hour and minute needleWidth
   final double needleWidth;
 
+  ///Inside clock background color
+  ///It is transparent by default
+  final Color backgroundColor;
+
+  ///Outer circle, needles and labels color.
+  ///It is black by default
+  final Color color;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,12 +51,14 @@ class ClockWidget extends StatelessWidget {
         child: CustomPaint(
           size: size,
           painter: _ClockPainter(
-            hour: time.hour,
-            minute: time.minute,
-            second: time.second,
+            hour: time.hour.clamp(0, 24),
+            minute: time.minute.clamp(0, 60),
+            second: time.second?.clamp(0, 60),
             showHoursLabel: showHoursLabel,
             needleWidth: needleWidth,
             pointyNeedle: pointyNeedle,
+            backgroundColor: backgroundColor,
+            color: color,
           ),
         ),
       ),
@@ -63,6 +75,8 @@ class _ClockPainter extends CustomPainter {
     required this.second,
     required this.needleWidth,
     required this.pointyNeedle,
+    required this.backgroundColor,
+    required this.color,
   });
 
   final bool showHoursLabel;
@@ -74,13 +88,16 @@ class _ClockPainter extends CustomPainter {
   final int minute;
   final int? second;
 
+  final Color backgroundColor;
+  final Color color;
+
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = math.min(center.dx, center.dy);
     final strokeCap = pointyNeedle ? StrokeCap.round : StrokeCap.butt;
     final paint = Paint()
-      ..color = Colors.black
+      ..color = color
       ..style = PaintingStyle.stroke
       ..strokeWidth = 8;
 
@@ -91,6 +108,13 @@ class _ClockPainter extends CustomPainter {
         second != null ? (-90 + second! * 6) * math.pi / 180 : null;
 
     canvas.drawCircle(center, radius, paint);
+    canvas.drawCircle(
+      center,
+      radius,
+      paint
+        ..style = PaintingStyle.fill
+        ..color = backgroundColor,
+    );
 
     canvas.drawLine(
       center,
@@ -100,7 +124,7 @@ class _ClockPainter extends CustomPainter {
       paint
         ..strokeWidth = needleWidth
         ..strokeCap = strokeCap
-        ..color = Colors.black,
+        ..color = color,
     );
     canvas.drawLine(
       center,
@@ -110,7 +134,7 @@ class _ClockPainter extends CustomPainter {
       paint
         ..strokeWidth = needleWidth
         ..strokeCap = strokeCap
-        ..color = Colors.black,
+        ..color = color,
     );
     if (secondAngle != null) {
       canvas.drawLine(
@@ -131,10 +155,12 @@ class _ClockPainter extends CustomPainter {
         final y = center.dy + (radius - 15) * math.sin(angle);
         final textPainter = TextPainter(
           text: TextSpan(
-              text: '$i',
-              style: const TextStyle(
-                color: Colors.black,
-              )),
+            text: '$i',
+            style: TextStyle(
+              color: color,
+              fontSize: radius / 9,
+            ),
+          ),
           textDirection: TextDirection.ltr,
         )..layout();
 
@@ -149,7 +175,7 @@ class _ClockPainter extends CustomPainter {
       center,
       4,
       paint
-        ..color = Colors.black
+        ..color = color
         ..style = PaintingStyle.fill,
     );
     if (secondAngle != null) {

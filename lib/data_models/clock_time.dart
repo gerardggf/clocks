@@ -6,7 +6,9 @@ class ClockTime {
     required this.hour,
     required this.minute,
     this.second,
-  });
+  }) : assert(
+          hour >= 0 && minute >= 0 && hour <= 24 && minute <= 60,
+        );
 
   final int hour;
   final int minute;
