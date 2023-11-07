@@ -27,15 +27,22 @@ class HomeView extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: ClockWidget(
+          size: const Size(250, 250),
           time: ClockTime(
-            hour: 3,
-            minute: 2,
-            second: 20,
+            hour: 9,
+            minute: 20,
+            second: 14,
           ),
+          pointyNeedle: true,
           onDrag: (updatedTime) {
             print(updatedTime.toStringTime);
           },
-          onDragSpeed: 1,
+          showHoursLabels: false,
+          clockThickness: 20,
+          needleThickness: 20,
+          dragSpeed: 1,
+          color: Colors.black,
+          backgroundColor: Colors.transparent,
         ),
       ),
     );

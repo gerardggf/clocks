@@ -1,34 +1,29 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
-
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
 
 Create custom analog clocks in an easy way.
 
 ## Features
 
+- Change the time by moving the clock hands and customize the movement
 - Show hour labels in the clock
-- Change needles thickness and shape
-- Change background, needles, labels and circle colors
+- Change clock hands thickness and shape
+- Change background, clock hands, labels and circle colors
+- Convert to TimeOfDay, to ClockTime, or to StringTime using getters
 
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Import the package
+
+```dart
+import 'package:clocks/clocks.dart';
+```
+
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+Use ClockWidget to create the analog clock and then you can modify its parameters.
+
+To get the timeofday from the clock use the onDrag parameter, so the parameter will listen to the updated clock TimeOfDay. 
 
 ```dart
 class HomeView extends StatelessWidget {
@@ -37,25 +32,32 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ClockWidget(
-        time: ClockTime(
-          hour: 22,
-          minute: 30,
-          second: 22,
+      body: Center(
+        child: ClockWidget(
+          size: const Size(250, 250),
+          time: ClockTime(
+            hour: 9,
+            minute: 20,
+            second: 14,
+          ),
+          pointyNeedle: true,
+          onDrag: (updatedTime) {
+            print(updatedTime.toStringTime);
+          },
+          showHoursLabels: false,
+          clockThickness: 20,
+          needleThickness: 20,
+          dragSpeed: 1,
+          color: Colors.black,
+          backgroundColor: Colors.transparent,
         ),
-        color: Colors.black,
-        backgroundColor: Colors.white,
-        pointyNeedle: true,
-        needleWidth: 4,
-        showHoursLabel: true,
       ),
     );
   }
 }
 ```
 
+
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+For more information or for any issue please contact gerard.ggf@gmail.com

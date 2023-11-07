@@ -11,15 +11,16 @@ class ClockWidget extends StatefulWidget {
     super.key,
     required this.time,
     this.size = const Size(200, 200),
-    this.showHoursLabel = false,
-    this.needleWidth = 8,
+    this.showHoursLabels = false,
+    this.needleThickness = 8,
+    this.clockThickness = 8,
     this.pointyNeedle = true,
     this.backgroundColor = Colors.transparent,
     this.color = Colors.black,
     this.onDrag,
-    this.onDragSpeed = 0.5,
+    this.dragSpeed = 0.7,
   }) : assert(
-          onDragSpeed >= 0 && onDragSpeed <= 1,
+          dragSpeed >= 0 && dragSpeed <= 1,
         );
 
   ///Clock widget size.
@@ -32,22 +33,25 @@ class ClockWidget extends StatefulWidget {
   final ClockTime time;
 
   ///This parameter shows clock hours if true
-  final bool showHoursLabel;
+  final bool showHoursLabels;
 
-  ///Hour and minute needles are pointy if true and square if false
+  ///Hour and minute clock hands are pointy if true and square if false
   ///
   ///The default value is true
   final bool pointyNeedle;
 
-  ///Hour and minute needleWidth
-  final double needleWidth;
+  ///Hour and minute clock hands thickness
+  final double needleThickness;
+
+  ///Hour and minute clock hands thickness
+  final double clockThickness;
 
   ///Inside clock background color
   ///
   ///It is transparent by default
   final Color backgroundColor;
 
-  ///Outer circle, needles and labels color.
+  ///Outer circle, clock hands and labels color.
   ///
   ///It is black by default
   final Color color;
@@ -58,10 +62,10 @@ class ClockWidget extends StatefulWidget {
   ///clock, because the return data is a [TimeOfDay]
   final void Function(TimeOfDay updatedTime)? onDrag;
 
-  ///Change the sensitivity of the drag when the onDrag function is passed.
+  ///Change the sensitivity of the drag when the [onDrag] function is passed.
   ///
   ///The value must be between 0 and 1
-  final double onDragSpeed;
+  final double dragSpeed;
 
   @override
   State<ClockWidget> createState() => _ClockWidgetState();
@@ -86,8 +90,8 @@ class _ClockWidgetState extends State<ClockWidget> {
     if (widget.onDrag == null) {
       timeMutable = widget.time;
     }
-    final int sensitivity = 10 - (((widget.onDragSpeed)) * 10).toInt();
-    print(sensitivity);
+    final int sensitivity = 10 - (((widget.dragSpeed)) * 10).toInt();
+
     return GestureDetector(
       //If onChanged parameter is not null, then detect drag on the clock
       onVerticalDragUpdate: widget.onDrag == null
@@ -120,11 +124,12 @@ class _ClockWidgetState extends State<ClockWidget> {
           minute: timeMutable.minute.clamp(0, 60),
           second:
               widget.onDrag != null ? null : timeMutable.second?.clamp(0, 60),
-          showHoursLabel: widget.showHoursLabel,
-          needleWidth: widget.needleWidth,
+          showHoursLabel: widget.showHoursLabels,
+          needleThickness: widget.needleThickness,
           pointyNeedle: widget.pointyNeedle,
           backgroundColor: widget.backgroundColor,
           color: widget.color,
+          clockThickness: widget.clockThickness,
         ),
       ),
     );
@@ -138,16 +143,18 @@ class _ClockPainter extends CustomPainter {
     required this.hour,
     required this.minute,
     required this.second,
-    required this.needleWidth,
+    required this.needleThickness,
     required this.pointyNeedle,
     required this.backgroundColor,
     required this.color,
+    required this.clockThickness,
   });
 
   final bool showHoursLabel;
   final bool pointyNeedle;
 
-  final double needleWidth;
+  final double needleThickness;
+  final double clockThickness;
 
   final int hour;
   final int minute;
@@ -175,7 +182,11 @@ class _ClockPainter extends CustomPainter {
         second != null ? (-90 + second! * 6) * math.pi / 180 : null;
 
     //Draw the clock's circumference
-    canvas.drawCircle(center, radius, paint);
+    canvas.drawCircle(
+      center,
+      radius,
+      paint..strokeWidth = clockThickness,
+    );
 
     //Paints the clock inside
     canvas.drawCircle(
@@ -186,31 +197,31 @@ class _ClockPainter extends CustomPainter {
         ..color = backgroundColor,
     );
 
-    //Draw the hour needle
+    //Draw the hour clock hand
     canvas.drawLine(
       center,
       center +
           Offset(math.cos(hourAngle) * radius * 0.5,
               math.sin(hourAngle) * radius * 0.5),
       paint
-        ..strokeWidth = needleWidth
+        ..strokeWidth = needleThickness
         ..strokeCap = strokeCap
         ..color = color,
     );
 
-    //Draw the minute needle
+    //Draw the minute clock hand
     canvas.drawLine(
       center,
       center +
           Offset(math.cos(minuteAngle) * radius * 0.7,
               math.sin(minuteAngle) * radius * 0.7),
       paint
-        ..strokeWidth = needleWidth
+        ..strokeWidth = needleThickness
         ..strokeCap = strokeCap
         ..color = color,
     );
 
-    //Draw the second needle
+    //Draw the second clock hand
     if (second != null) {
       canvas.drawLine(
         center,
