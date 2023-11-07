@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_this
+
 import 'package:flutter/material.dart';
 
 import '../clocks.dart';
@@ -27,8 +29,18 @@ class ClockTime {
         second: second ?? this.second,
       );
 
-  TimeOfDay toTimeOfDay() => TimeOfDay(
+  TimeOfDay get toTimeOfDay => TimeOfDay(
         hour: hour,
         minute: minute,
       );
+}
+
+extension TimeOfDayToClock on TimeOfDay {
+  ClockTime get toClockTime => ClockTime(
+        hour: hour,
+        minute: minute,
+      );
+
+  String get toStringTime =>
+      '${this.hour.toString().padLeft(2, '0')}:${this.minute.toString().padLeft(2, '0')}';
 }
