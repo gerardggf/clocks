@@ -22,17 +22,15 @@ class MyApp extends StatelessWidget {
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
+  final timeOfDay = const TimeOfDay(hour: 3, minute: 20);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: ClockWidget(
           size: const Size(250, 250),
-          time: ClockTime(
-            hour: 9,
-            minute: 20,
-            second: 14,
-          ),
+          time: timeOfDay.toClockTime,
           pointyNeedle: true,
           onDrag: (updatedTime) {
             print(updatedTime.toStringTime);

@@ -12,7 +12,7 @@ Create custom analog clocks in an easy way.
 
 ## Getting started
 
-Import the package
+Import the clocks package.
 
 ```dart
 import 'package:clocks/clocks.dart';
@@ -23,7 +23,9 @@ import 'package:clocks/clocks.dart';
 
 Use ClockWidget to create the analog clock and then you can modify its parameters.
 
-To get the timeofday from the clock use the onDrag parameter, so the parameter will listen to the updated clock TimeOfDay. 
+To get the TimeOfDay from the clock use the onDrag parameter, so the parameter will listen to the updated clock TimeOfDay.
+
+In the required parameter "time", you must pass an instance of ClockTime, a class which contains the hour and minutes, and optionally, the seconds, that will be displayed on the clock
 
 ```dart
 class HomeView extends StatelessWidget {
@@ -56,6 +58,14 @@ class HomeView extends StatelessWidget {
   }
 }
 ```
+
+You can also use the following code to easily convert from TimeOfDay to ClockTime.
+
+```dart
+ClockWidget(
+ time: timeOfDay.toClockTime,
+)
+``````
 
 
 ## Additional information
