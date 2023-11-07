@@ -6,7 +6,7 @@ import 'package:clocks/data_models/clock_time.dart';
 import 'package:flutter/material.dart';
 
 ///Widget that shows a custom analog clock
-class ClockWidget extends StatelessWidget {
+class ClockWidget extends StatefulWidget {
   const ClockWidget({
     super.key,
     required this.time,
@@ -16,6 +16,7 @@ class ClockWidget extends StatelessWidget {
     this.pointyNeedle = true,
     this.backgroundColor = Colors.transparent,
     this.color = Colors.black,
+    this.onChanged,
   });
 
   ///Clock widget size.
@@ -44,22 +45,55 @@ class ClockWidget extends StatelessWidget {
   ///It is black by default
   final Color color;
 
+  ///Change the clock time moving its hands
+  final void Function(ClockTime updatedTime)? onChanged;
+
+  @override
+  State<ClockWidget> createState() => _ClockWidgetState();
+}
+
+class _ClockWidgetState extends State<ClockWidget> {
+  late ClockTime timeMutable;
+
+  @override
+  void initState() {
+    super.initState();
+    timeMutable = widget.time;
+  }
+
+  double? initialAngle;
+  double totalRotation = 0;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: CustomPaint(
-          size: size,
-          painter: _ClockPainter(
-            hour: time.hour.clamp(0, 24),
-            minute: time.minute.clamp(0, 60),
-            second: time.second?.clamp(0, 60),
-            showHoursLabel: showHoursLabel,
-            needleWidth: needleWidth,
-            pointyNeedle: pointyNeedle,
-            backgroundColor: backgroundColor,
-            color: color,
-          ),
+    return GestureDetector(
+      onVerticalDragUpdate: widget.onChanged == null
+          ? null
+          : (details) {
+              if (timeMutable.minute >= 60) {
+                if (timeMutable.hour >= 24) {
+                  timeMutable = timeMutable.copyWith(hour: 0);
+                }
+                timeMutable =
+                    timeMutable.copyWith(minute: 0, hour: timeMutable.hour + 1);
+                return;
+              }
+              timeMutable =
+                  timeMutable.copyWith(minute: timeMutable.minute + 1);
+              setState(() {});
+              widget.onChanged!(timeMutable);
+            },
+      child: CustomPaint(
+        size: widget.size,
+        painter: _ClockPainter(
+          hour: timeMutable.hour.clamp(0, 24),
+          minute: timeMutable.minute.clamp(0, 60),
+          second: timeMutable.second?.clamp(0, 60),
+          showHoursLabel: widget.showHoursLabel,
+          needleWidth: widget.needleWidth,
+          pointyNeedle: widget.pointyNeedle,
+          backgroundColor: widget.backgroundColor,
+          color: widget.color,
         ),
       ),
     );
@@ -93,8 +127,10 @@ class _ClockPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    //Declare clock variables
     final center = Offset(size.width / 2, size.height / 2);
     final radius = math.min(center.dx, center.dy);
+
     final strokeCap = pointyNeedle ? StrokeCap.round : StrokeCap.butt;
     final paint = Paint()
       ..color = color
@@ -107,7 +143,10 @@ class _ClockPainter extends CustomPainter {
     final double? secondAngle =
         second != null ? (-90 + second! * 6) * math.pi / 180 : null;
 
+    //Draw the clock's circumference
     canvas.drawCircle(center, radius, paint);
+
+    //Paints the clock inside
     canvas.drawCircle(
       center,
       radius,
@@ -116,6 +155,7 @@ class _ClockPainter extends CustomPainter {
         ..color = backgroundColor,
     );
 
+    //Draw the hour needle
     canvas.drawLine(
       center,
       center +
@@ -126,6 +166,8 @@ class _ClockPainter extends CustomPainter {
         ..strokeCap = strokeCap
         ..color = color,
     );
+
+    //Draw the minute needle
     canvas.drawLine(
       center,
       center +
@@ -136,6 +178,8 @@ class _ClockPainter extends CustomPainter {
         ..strokeCap = strokeCap
         ..color = color,
     );
+
+    //Draw the second needle
     if (secondAngle != null) {
       canvas.drawLine(
         center,
@@ -148,6 +192,7 @@ class _ClockPainter extends CustomPainter {
       );
     }
 
+    //Paints the texts in the clock
     if (showHoursLabel) {
       for (int i = 1; i <= 12; i++) {
         final angle = (-90 + (i * 30)) * math.pi / 180;
@@ -171,6 +216,7 @@ class _ClockPainter extends CustomPainter {
       }
     }
 
+    //Draw the center circle
     canvas.drawCircle(
       center,
       4,
@@ -178,7 +224,9 @@ class _ClockPainter extends CustomPainter {
         ..color = color
         ..style = PaintingStyle.fill,
     );
+
     if (secondAngle != null) {
+      //Draw the seconds center circle
       canvas.drawCircle(
         center,
         4,

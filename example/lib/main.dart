@@ -25,23 +25,19 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: ClockWidget(
-              time: ClockTime(
-                hour: 22,
-                minute: 30,
-                second: 22,
-              ),
-              color: Colors.black,
-              backgroundColor: Colors.white,
-              pointyNeedle: true,
-              needleWidth: 4,
-              showHoursLabel: true,
-            ),
+      body: Center(
+        child: ClockWidget(
+          time: ClockTime(
+            hour: 22,
+            minute: 30,
+            second: 22,
           ),
-        ],
+          color: Colors.black,
+          backgroundColor: Colors.white,
+          pointyNeedle: true,
+          needleWidth: 4,
+          showHoursLabel: true,
+        ),
       ),
     );
   }

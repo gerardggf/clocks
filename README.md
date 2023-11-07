@@ -11,12 +11,14 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages).
 -->
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+Create custom analog clocks in an easy way.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+- Show hour labels in the clock
+- Change needles thickness and shape
+- Change background, needles, labels and circle colors
+
 
 ## Getting started
 
@@ -29,7 +31,27 @@ TODO: Include short and useful examples for package users. Add longer examples
 to `/example` folder.
 
 ```dart
-const like = 'sample';
+class HomeView extends StatelessWidget {
+  const HomeView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: ClockWidget(
+        time: ClockTime(
+          hour: 22,
+          minute: 30,
+          second: 22,
+        ),
+        color: Colors.black,
+        backgroundColor: Colors.white,
+        pointyNeedle: true,
+        needleWidth: 4,
+        showHoursLabel: true,
+      ),
+    );
+  }
+}
 ```
 
 ## Additional information

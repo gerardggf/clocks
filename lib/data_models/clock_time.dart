@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../clocks.dart';
 
 ///Time to be displayed in the [ClockWidget]
@@ -23,5 +25,10 @@ class ClockTime {
         hour: hour ?? this.hour,
         minute: minute ?? this.minute,
         second: second ?? this.second,
+      );
+
+  TimeOfDay toTimeOfDay() => TimeOfDay(
+        hour: hour,
+        minute: minute,
       );
 }
