@@ -18,7 +18,7 @@ class ClockWidget extends StatefulWidget {
     this.backgroundColor = Colors.transparent,
     this.color = Colors.black,
     this.onDrag,
-    this.dragSpeed = 0.7,
+    this.dragSpeed = 0.3,
   }) : assert(
           dragSpeed >= 0 && dragSpeed <= 1,
         );

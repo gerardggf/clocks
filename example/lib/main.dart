@@ -35,10 +35,10 @@ class HomeView extends StatelessWidget {
           onDrag: (updatedTime) {
             print(updatedTime.toStringTime);
           },
-          showHoursLabels: false,
+          showHoursLabels: true,
           clockThickness: 20,
           needleThickness: 20,
-          dragSpeed: 1,
+          dragSpeed: 0.3,
           color: Colors.black,
           backgroundColor: Colors.transparent,
         ),
